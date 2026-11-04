@@ -39,7 +39,7 @@
 }
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0;min-height:100%;}
+html,body{margin:0;padding:0;min-height:100%;position:relative;}
 html{-webkit-text-size-adjust:100%}
 body{
   font-family:"SF Pro Rounded",ui-rounded,"Nunito","Baloo 2",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -1734,6 +1734,19 @@ function viewPlay() {
   return h;
 }
 
+let wakeLock = null;
+async function keepAwake(on) {
+  try {
+    if (on && !wakeLock && navigator.wakeLock) {
+      wakeLock = await navigator.wakeLock.request("screen");
+      wakeLock.addEventListener("release", function () { wakeLock = null; });
+    } else if (!on && wakeLock) {
+      await wakeLock.release();
+      wakeLock = null;
+    }
+  } catch (e) { /* not supported / denied - no problem */ }
+}
+
 function buildKeyboard() {
   const wrap = $("#kbwrap");
   if (!wrap) return;
@@ -2583,6 +2596,7 @@ function currentView() {
 let lastScreen = null;
 function render() {
   Game.destroy();
+  if (S.screen !== "play") keepAwake(false);
   if (S.screen !== "free") { FREE.guess = null; FREE.playing = false; }
   const k = curKid();
   const col = k ? k.color : "#F25CA8";
@@ -2600,6 +2614,7 @@ function render() {
       Game.wantStart = false;
       Game.start(Game.song, Game.ver, Game.mode);
       buildKeyboard();       // rebuild with the song's real range + hot keys
+      keepAwake(true);
     }
     const hud = $("#hud");
     if (hud) hud.textContent = "⭐ 0 / " + Game.total;
