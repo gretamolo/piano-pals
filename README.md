@@ -42,7 +42,7 @@ There is nothing to install and nothing to build. `index.html` is the whole app.
 | **Lessons** | 12 short interactive lessons, each ending in a star. |
 | **Free Play** | Two labelled octaves, a "guess the note" ear game, and record/playback. |
 | **My Stars** | Stars, songs finished and a garden that fills up as you earn. |
-| **⚙️ Grown-up corner** | Sound on/off, unlock all songs, reset one kid's progress, add/edit players. |
+| **⚙️ Grown-up corner** | Sound on/off, **choose your piano (touch / MIDI / listen)**, mic sensitivity, test panel, unlock all songs, reset progress, add/edit players. |
 
 ### Two play modes
 
@@ -127,6 +127,88 @@ shifts, which is what a primer book does.
 
 ---
 
+## Playing on a real piano 🎹
+
+Piano Pals can take its notes from an instrument instead of the screen. Open
+**⚙️ Grown-up corner → My piano** and choose one of three sources:
+
+| Source | What it needs | Good for |
+|---|---|---|
+| **👆 Touch screen** | nothing | tablets, laptops, the default |
+| **🎹 MIDI piano** | a USB-MIDI cable and a Chromium browser | digital pianos |
+| **👂 Listen to my piano** | a microphone and a quiet room | any acoustic piano |
+
+The choice is remembered on that device, and each kid can also have their own
+(Free Play on the screen for one, the real piano for the other).
+
+### MIDI piano (digital pianos)
+
+Plug the piano into the computer with its USB cable, switch it on, then pick
+**MIDI piano**. The status line turns green with the piano's name and a device
+list appears if you have more than one. **Connect / Reconnect** re-scans at any
+time, and unplugging or plugging back in is picked up automatically.
+
+* Every channel is accepted, so it works whether the piano transmits on
+  channel 1 or 16.
+* A note-on with velocity 0 is treated as a note-**off**, which is what most
+  keyboards send for a key release.
+* Presses register the instant the message arrives — the app never waits for its
+  own sound, so there is no added latency.
+* The on-screen keyboard stays visible and tappable as a backup, but it dims
+  while the real piano is driving.
+
+> **Important:** Web MIDI is a Chromium feature. It works in **Chrome and Edge
+> on a computer** (and Chrome on Android). **Safari — on a Mac, an iPad or an
+> iPhone — does not support Web MIDI at all**, in any version. On an iPad, use
+> **Listen to my piano** instead; that is exactly why it exists.
+
+### Listen to my piano (acoustic pianos)
+
+Pick **Listen to my piano**, press **Start listening**, and allow the
+microphone. Then play one note at a time. The app:
+
+* measures the room level and ignores anything below a noise gate
+  (the **Mic level** slider moves that gate);
+* finds the pitch by normalised autocorrelation over a 4096-sample window,
+  with parabolic interpolation for cents accuracy;
+* requires the pitch to hold steady for ~70 ms before counting it, so a
+  scrape or a cough can't score a note;
+* maps it to the nearest equal-tempered key within ±50 cents;
+* locks that note until it decays or changes, so one struck key is one hit.
+
+The **Test my piano** panel shows the live level meter, the note name, how many
+cents off it is and the frequency — a parent can watch it work before handing
+the iPad over. **Mic level** adjusts sensitivity if quiet playing isn't picked
+up (or if the room is noisy).
+
+> **Use headphones, or leave the app sound off.** Listening mode hears the
+> room, so if the app plays its own tone the microphone will hear that too.
+> Piano Pals mutes its own output automatically when listening mode starts, and
+> the setting is right there if you want to change it. A quiet room and one
+> note at a time give by far the best results.
+
+### Latency
+
+Both real-instrument paths register on the *key press*, not on the app's audio.
+Visual feedback (the note disappearing, the star counter) happens immediately;
+nothing is scheduled behind the synth.
+
+### If something doesn't work
+
+| What you see | What to do |
+|---|---|
+| "This browser can't talk to MIDI pianos" | You're in Safari/Firefox-on-Mac. Use Chrome/Edge on a computer, or switch to **Listen to my piano**. |
+| "No piano found" | Check the USB cable, switch the piano on, press **Reconnect**. Some pianos need *USB MIDI* mode selected in their own settings. |
+| "MIDI access was blocked" | Allow MIDI for the page in the browser's site settings, then reload. |
+| "Microphone permission was refused" | Allow the mic for the page, then press **Start listening** again. |
+| Listening misses quiet notes | Raise **Mic level**, play a little louder, or move closer. |
+| Listening fires on the wrong note | Lower **Mic level** a touch, turn the app sound off, and play one note at a time. |
+
+Everything still works exactly as before with no piano and no microphone:
+if neither is available the app simply stays on the on-screen keyboard.
+
+---
+
 ## Sound
 
 Everything is synthesised live with the **Web Audio API**; there are no audio
@@ -173,7 +255,11 @@ kids-piano/
     ├── play_all.py       plays all 12 songs in both versions to the end
     ├── lesson_all.py     completes every step of all 12 lessons
     ├── sizes.py          layout checks + screenshots at four viewports
-    └── timed.py          "Keep going" scoring against the real note timeline
+    ├── timed.py          "Keep going" scoring against the real note timeline
+    ├── midi.py           fake Web MIDI device: notes -> songs, free play, ear game
+    ├── listen.py         fake microphone: pitch -> notes, plus denial handling
+    ├── pitch.py          the detector's maths, on synthetic tones
+    └── midi_stub.py      the MIDI / microphone stubs those tests inject
 ```
 
 Run a test with:

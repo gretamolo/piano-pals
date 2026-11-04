@@ -466,6 +466,69 @@ body::before{
 .guessdots i.on{background:var(--green)}
 .guessdots i.miss{background:#FFD3D4}
 
+/* ---------- piano input: source picker, status, test panel ---------- */
+.inputbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
+.srcbtn{
+  flex:1 1 118px;min-height:70px;
+  border:var(--line) solid var(--ink);border-radius:18px;background:#fff;
+  box-shadow:0 4px 0 var(--ink);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  font-size:12.5px;font-weight:900;padding:8px 6px;line-height:1.15;text-align:center;
+  transition:transform .07s,box-shadow .07s;
+}
+.srcbtn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.srcbtn .em{font-size:26px;line-height:1}
+.srcbtn.sel{background:var(--kid);color:#fff;box-shadow:0 4px 0 var(--ink),0 0 0 4px #fff inset}
+.srcbtn.off{opacity:.55}
+
+.pianostatus{
+  display:flex;align-items:flex-start;gap:8px;font-size:12.5px;font-weight:800;
+  margin:10px 0 2px;padding:9px 11px;border-radius:12px;line-height:1.35;
+  background:#F2F4FA;border:2px dashed #C9CCE0;color:var(--ink-soft);
+}
+.pianostatus .ico{font-size:15px;line-height:1.2;flex:none}
+.pianostatus.ok{background:#E7FBEE;border-color:#7CD9A0;border-style:solid;color:#1D7A44}
+.pianostatus.warn{background:#FFF4E0;border-color:#EFC070;border-style:solid;color:#8A5A11}
+.pianostatus.bad{background:#FFE9EA;border-color:#F3AFB2;border-style:solid;color:#A3282E}
+
+.midisel{
+  width:100%;font:inherit;font-size:14px;font-weight:800;padding:10px 11px;
+  border-radius:12px;border:3px solid var(--ink);background:#fff;margin-top:8px;
+  -webkit-appearance:none;appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,var(--ink) 50%),linear-gradient(135deg,var(--ink) 50%,transparent 50%);
+  background-position:calc(100% - 20px) 19px,calc(100% - 14px) 19px;
+  background-size:6px 6px,6px 6px;background-repeat:no-repeat;padding-right:36px;
+}
+.sensrow{display:flex;align-items:center;gap:10px;margin:10px 0 2px}
+.sensrow label{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.8px;color:var(--ink-soft);flex:none}
+.sensrow input[type=range]{flex:1;height:36px;accent-color:var(--kid);background:transparent}
+.sensval{font-size:12px;font-weight:900;min-width:36px;text-align:right}
+.meter{height:14px;border-radius:999px;background:#E3E6F0;overflow:hidden;border:2px solid #C9CCE0;margin-top:8px}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2ECC71,#FFC83D,#FF5A5F);
+  transition:width .07s linear;border-radius:999px}
+
+.testbox{margin-top:10px;border:3px dashed #C9CCE0;border-radius:16px;padding:10px 10px 8px;background:#fff}
+.testbox.live{border-color:#66D19E;border-style:solid;background:#F7FFFB}
+.testnote{display:flex;align-items:baseline;gap:9px;justify-content:center;min-height:46px}
+.testnote b{font-size:38px;line-height:1;color:var(--kid);letter-spacing:-1px}
+.testnote span{font-size:12.5px;color:var(--ink-soft);font-weight:800}
+.tstrip{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin-top:8px}
+.tstrip i{
+  height:26px;border-radius:6px;border:2px solid #D3D7E6;background:#F7F8FC;
+  display:grid;place-items:center;font-size:9px;font-style:normal;font-weight:900;color:#9AA0BC;
+}
+.tstrip i.bk{background:#2A2D42;border-color:#15172A;color:#B9BED6}
+.tstrip i.on{background:var(--yellow);border-color:var(--ink);color:var(--ink);transform:scale(1.12)}
+.tstrip i.on.bk{background:var(--yellow);color:var(--ink)}
+.mictip{font-size:11.5px;color:var(--ink-soft);font-weight:700;line-height:1.35;margin-top:7px}
+
+/* the on-screen keyboard steps back when a real piano is driving */
+.kbwrap.secondary,.kbscroll.secondary{opacity:.45;transition:opacity .2s}
+.kbwrap.secondary .kb,.kbscroll.secondary .kb{filter:saturate(.55)}
+.inputchip{max-width:46vw;overflow:hidden;text-overflow:ellipsis}
+.inputchip.ok{background:#E7FBEE}
+.inputchip.warn{background:#FFF4E0}
+
 .toast{
   position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translateX(-50%);
   background:var(--ink);color:#fff;border-radius:999px;padding:12px 20px;font-size:15px;font-weight:900;
@@ -486,6 +549,8 @@ body::before{
 }
 .sheet h2{font-size:clamp(21px,3.4vh,27px);font-weight:900;display:flex;align-items:center;gap:8px}
 .sheet .row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:2px dashed #DCD5C8}
+.sheet .sec2{font-size:12px;font-weight:900;letter-spacing:1.1px;text-transform:uppercase;color:var(--ink-soft);
+  margin:16px 0 6px;display:flex;align-items:center;gap:6px}
 .sheet .row:last-of-type{border-bottom:0}
 .sheet .row .txt{flex:1;min-width:0}
 .sheet .row .txt b{display:block;font-size:16px}
@@ -1045,6 +1110,11 @@ function viewPicker() {
   h += '</div>';
   h += '<div style="display:flex;gap:10px;align-items:center;justify-content:center;margin-top:auto">' +
        gearBtn() + '</div>';
+  if (Inp.mode !== "touch") {
+    const c = inputChipInfo();
+    h += '<button class="chip inputchip ' + c.cls + '" data-open-input="1" style="margin:0 auto">' +
+         c.label + ' · change</button>';
+  }
   h += '</div>';
   return h;
 }
@@ -1714,6 +1784,29 @@ function confetti(color, n) {
 }
 
 /* ------------------------------------------------------- play screen shell */
+/** A slim status line so a parent can see the piano is live during a song. */
+function inputChipInfo() {
+  if (Inp.mode === "midi") {
+    if (Inp.status === "ok") return { cls: "ok", label: "🎹 " + esc(Inp.deviceName || "Piano"), canStart: false };
+    if (Inp.status === "connecting") return { cls: "warn", label: "🎹 Looking for piano…", canStart: false };
+    if (Inp.status === "unsupported") return { cls: "warn", label: "🎹 MIDI not available here", canStart: false };
+    return { cls: "warn", label: "🎹 No piano found", canStart: false };
+  }
+  if (Inp.status === "ok") return { cls: "ok", label: "👂 Listening to your piano", canStart: false };
+  if (Inp.status === "connecting") return { cls: "warn", label: "👂 Starting the mic…", canStart: false };
+  if (Inp.status === "denied") return { cls: "warn", label: "👂 Mic blocked", canStart: false };
+  if (Inp.status === "unsupported") return { cls: "warn", label: "👂 Mic not available", canStart: false };
+  return { cls: "warn", label: "👂 Tap to listen", canStart: true };
+}
+
+function inputStrip() {
+  if (Inp.mode === "touch") return "";
+  const c = inputChipInfo();
+  return '<button class="chip inputchip ' + c.cls + '" id="inputchip" ' +
+         'data-chip="1" ' + (c.canStart ? 'data-startlisten="1" ' : "") +
+         'style="align-self:flex-start" aria-label="Piano input">' + c.label + '</button>';
+}
+
 function viewPlay() {
   const s = SONGS.filter(function (x) { return x.id === S.songId; })[0];
   if (!s) { go("songs"); return ""; }
@@ -1727,7 +1820,8 @@ function viewPlay() {
        (S.ver === "first" ? "First notes" : "Whole song") + " · " +
        (S.mode === "wait" ? "🐢 Wait for me" : "🐇 Keep going") + '</span></div>' +
        '<div class="chip gold" id="hud">⭐ 0 / ' + total + '</div>' +
-       '</div>';
+       '</div>' +
+       inputStrip();
   h += '<div class="roll" id="roll">' +
        '<div class="handlegend"></div>' +
        '<div class="hitglow"></div><div class="hitband"></div>' +
@@ -1751,9 +1845,31 @@ async function keepAwake(on) {
   } catch (e) { /* not supported / denied - no problem */ }
 }
 
+let playHooked = false;
+function wirePlayInput() {
+  if (playHooked) return;
+  playHooked = true;
+  Inp.onNote(function (midi, vel, origin) {
+    if (S.screen !== "play" || origin === "touch") return;
+    const el = document.querySelector('#kbwrap [data-m="' + midi + '"]');
+    if (el) flashKey(el);
+    // Feedback is immediate: the press is judged against the note timeline the
+    // moment it arrives. We never wait for the app's own sound.
+    Game.press(midi, el);
+  });
+  Inp.onKeyUp(function (midi) {
+    const el = document.querySelector('#kbwrap [data-m="' + midi + '"]');
+    if (el) el.classList.remove("on");
+  });
+}
+
 function buildKeyboard() {
   const wrap = $("#kbwrap");
   if (!wrap) return;
+  wirePlayInput();
+  const secondary = Inp.mode !== "touch";
+  wrap.classList.toggle("secondary", secondary);
+  wrap.setAttribute("aria-label", secondary ? "On-screen keyboard (backup - your piano is connected)" : "On-screen keyboard");
   const model = Game.model || kbModel(48, 72);
   const hot = new Set();
   const cool = new Set();
@@ -1768,6 +1884,522 @@ function buildKeyboard() {
     Game.press(midi, el);
   });
 }
+/* ==========================================================================
+   PIANO INPUT
+   One small layer that lets a REAL piano drive the app:
+     . midi    - a digital piano over Web MIDI (Chrome / Edge / Firefox)
+     . listen  - an acoustic piano through the microphone, pitch-tracked
+   Everything funnels into `Inp.noteOn(midi, velocity, origin)`, which is the
+   same door the on-screen keys use. Nothing else in the app needs to care
+   where a press came from.
+   ========================================================================== */
+
+const INPUT_MODES = ["touch", "midi", "listen"];
+
+const Inp = {
+  mode: "touch",          // "touch" | "midi" | "listen"
+  status: "idle",         // idle | connecting | ok | unsupported | denied | notfound | error
+  detail: "",             // human-readable extra line
+  deviceName: "",
+  midiInputs: [],
+  midiAccess: null,
+  midiListeners: [],      // per-device handler refs, so we can unhook cleanly
+  active: new Map(),      // midi note -> count, so overlapping presses release cleanly
+  lastNote: null,         // for the "test my piano" panel
+  lastNoteAt: 0,
+  noteSubs: [],           // app callbacks: (midi, velocity, origin) -> void
+  stateSubs: [],          // UI callbacks when the connection changes
+
+  /* ---------------------------------------------------------------- setup */
+  init() {
+    const saved = loadInputPref();
+    this.mode = saved.mode || "touch";
+    this.wantDevice = saved.device || "";
+    this.sensitivity = saved.sens != null ? saved.sens : 0.5;
+    this.suppressOwnSound = saved.muteOwn !== false;
+    if (!INPUT_MODES.includes(this.mode)) this.mode = "touch";
+    // Don't touch hardware until the grown-up (or the kid) asks for it.
+    if (this.mode === "midi") this.connectMidi(true);
+    else if (this.mode === "listen") this.status = "idle";
+    else this.status = "ok";
+  },
+
+  onNote(fn) { if (typeof fn === "function") this.noteSubs.push(fn); },
+  onChange(fn) { if (typeof fn === "function") this.stateSubs.push(fn); },
+  emitChange() {
+    this.stateSubs.forEach(function (f) {
+      try { f(Inp.mode, Inp.status); } catch (e) { /* a UI callback must never break input */ }
+    });
+  },
+
+  /** THE single entry point. Mirrors a press on the on-screen keyboard. */
+  noteOn(midi, velocity, origin) {
+    if (typeof midi !== "number" || !isFinite(midi) || midi < 0 || midi > 127) return;
+    midi = Math.round(midi);
+    this.lastNote = midi;
+    this.lastNoteAt = performance.now();
+    if (typeof paintTestNote === "function" && $("#testbox")) paintTestNote();
+    this.noteSubs.forEach(function (f) {
+      try { f(midi, velocity == null ? 1 : velocity, origin || Inp.mode); }
+      catch (e) { /* never let one consumer break the rest */ }
+    });
+  },
+
+  /* ------------------------------------------------------------ mode picks */
+  setMode(mode) {
+    if (!INPUT_MODES.includes(mode)) return;
+    if (mode === this.mode) { this.emitChange(); return; }
+    const prev = this.mode;
+
+    // tear down whatever was running
+    if (prev === "midi") this.disconnectMidi();
+    if (prev === "listen") this.stopListeningMode();
+
+    this.mode = mode;
+    this.status = mode === "touch" ? "ok" : "connecting";
+    this.detail = "";
+    saveInputPref({ mode: mode });
+
+    if (mode === "midi") this.connectMidi(false);
+    else if (mode === "listen") { this.status = "idle"; }
+    this.emitChange();
+  },
+
+  setSensitivity(v) {
+    this.sensitivity = clamp(Number(v) || 0.5, 0, 1);
+    saveInputPref({ sens: this.sensitivity });
+    if (this.pitch) this.pitch.sensitivity = this.sensitivity;
+    this.emitChange();
+  },
+
+  setMuteOwn(on) {
+    this.suppressOwnSound = !!on;
+    saveInputPref({ muteOwn: this.suppressOwnSound });
+    // In listening mode the app's own tone is the main source of false notes,
+    // so muting it is the quiet, reliable default.
+    if (this.mode === "listen" && this.suppressOwnSound) Snd.setEnabled(false);
+    this.emitChange();
+  },
+
+  /* ============================================================== MIDI ==== */
+  midiSupported() { return typeof navigator !== "undefined" && typeof navigator.requestMIDIAccess === "function"; },
+
+  connectMidi(auto) {
+    const self = this;
+    if (!this.midiSupported()) {
+      this.status = "unsupported";
+      this.detail = "This browser has no Web MIDI. Safari and iPad do not support it yet - use Listen to my piano instead.";
+      this.emitChange();
+      return;
+    }
+    this.status = "connecting";
+    this.emitChange();
+
+    let req;
+    try {
+      req = navigator.requestMIDIAccess({ sysex: false });
+    } catch (e) {
+      this.status = "error";
+      this.detail = "The browser blocked MIDI access. Check the site permissions and reload.";
+      this.emitChange();
+      return;
+    }
+    Promise.resolve(req).then(function (access) {
+      self.midiAccess = access;
+      try {
+        access.onstatechange = function () { self.refreshMidiDevices(); };
+      } catch (e) { /* older implementations */ }
+      self.refreshMidiDevices(true);
+    }).catch(function (err) {
+      const name = err && err.name ? err.name : "";
+      self.status = (name === "SecurityError" || name === "NotAllowedError") ? "denied" : "error";
+      self.detail = self.status === "denied"
+        ? "MIDI permission was refused. Allow MIDI for this page in the browser settings, then reload."
+        : "Could not open MIDI (" + (err && err.message ? err.message : "unknown error") + ").";
+      self.emitChange();
+    });
+  },
+
+  /** Re-enumerate inputs; safe to call on every statechange (hot-plug). */
+  refreshMidiDevices(silent) {
+    if (!this.midiAccess) return;
+    const list = [];
+    try {
+      this.midiAccess.inputs.forEach(function (inp) {
+        list.push({ id: inp.id, name: inp.name || "MIDI piano", manufacturer: inp.manufacturer || "" });
+      });
+    } catch (e) { /* ignore malformed implementations */ }
+    this.midiInputs = list;
+
+    const wanted = this.wantDevice && list.some(function (d) { return d.id === this.wantDevice; }, this)
+      ? this.wantDevice
+      : (list[0] ? list[0].id : "");
+
+    this.hookMidiInputs(wanted);
+
+    if (!list.length) {
+      this.status = "notfound";
+      this.deviceName = "";
+      this.detail = "No piano found. Plug in the USB cable, switch the piano on, then tap Reconnect.";
+    } else {
+      this.status = "ok";
+      const chosen = list.filter(function (d) { return d.id === wanted; })[0] || list[0];
+      this.deviceName = chosen.name || "MIDI piano";
+      this.detail = "";
+      this.wantDevice = chosen.id;
+      saveInputPref({ device: chosen.id });
+    }
+    if (!silent) this.emitChange();
+    else this.emitChange();
+  },
+
+  /** Attach a `midimessage` handler to every input; the chosen one is live. */
+  hookMidiInputs(chosenId) {
+    const self = this;
+    // clear old handlers first
+    this.midiListeners.forEach(function (x) {
+      try { x.input.onmidimessage = null; } catch (e) { /* gone already */ }
+    });
+    this.midiListeners = [];
+    if (!this.midiAccess) return;
+    try {
+      this.midiAccess.inputs.forEach(function (inp) {
+        const handler = function (ev) { self.handleMidiMessage(ev, inp.id === chosenId); };
+        try { inp.onmidimessage = handler; } catch (e) { /* read-only port */ }
+        self.midiListeners.push({ input: inp, handler: handler });
+        // Opening explicitly is polite; some drivers only stream once asked.
+        if (typeof inp.open === "function" && inp.id === chosenId) {
+          try { inp.open(); } catch (e) {}
+        }
+      });
+    } catch (e) { /* ignore */ }
+  },
+
+  disconnectMidi() {
+    this.midiListeners.forEach(function (x) {
+      try { x.input.onmidimessage = null; } catch (e) {}
+    });
+    this.midiListeners = [];
+    if (this.midiAccess) {
+      try { this.midiAccess.onstatechange = null; } catch (e) {}
+    }
+    this.midiAccess = null;
+    this.midiInputs = [];
+    this.deviceName = "";
+    this.active.clear();
+  },
+
+  /**
+   * Web MIDI message -> app note.
+   * 0x90 = note on (velocity 0 means note OFF), 0x80 = note off.
+   * All 16 channels are accepted, because a piano may send on any of them.
+   */
+  handleMidiMessage(ev, isChosen) {
+    const d = ev && ev.data;
+    if (!d || d.length < 2) return;
+    const status = d[0] & 0xf0;
+    const midi = d[1];
+    const vel = d.length > 2 ? d[2] : 0;
+
+    if (status === 0x90) {
+      if (vel === 0) { this.midiNoteOff(midi); return; }   // running-status note off
+      if (!isChosen) return;                               // ignore other ports
+      this.midiNoteOn(midi, vel / 127);
+    } else if (status === 0x80) {
+      if (!isChosen) return;
+      this.midiNoteOff(midi);
+    } else if (status === 0xb0 && d[2] === 0 && d[3] === 123) {
+      // all-notes-off / all-sound-off: release everything
+      this.midiNoteOff(null);
+    }
+  },
+
+  midiNoteOn(midi, vel) {
+    // A retrigger without a note-off (some keyboards do this): release first.
+    if (this.active.get(midi)) this.noteUp(midi);
+    this.active.set(midi, 1);
+    this.noteOn(midi, vel, "midi");
+  },
+
+  midiNoteOff(midi) {
+    if (midi == null) {
+      this.active.forEach(function (_, m) { Inp.noteUp(m); });
+      this.active.clear();
+      return;
+    }
+    if (this.active.get(midi)) this.noteUp(midi);
+  },
+
+  noteUp(midi) {
+    // Consumers mostly need "a key went up" so the on-screen key can unlight.
+    this.emitKeyUp(midi);
+  },
+
+  keyUpHandlers: [],
+  onKeyUp(fn) { if (typeof fn === "function") this.keyUpHandlers.push(fn); },
+  emitKeyUp(midi) {
+    this.keyUpHandlers.forEach(function (f) { try { f(midi); } catch (e) {} });
+  },
+
+  /* ============================================================ LISTEN ==== */
+  stopListeningMode() {
+    if (this.pitch) { this.pitch.stop(); this.pitch = null; }
+  },
+
+  async startListeningMode() {
+    const self = this;
+    if (this.pitch) { this.status = "ok"; this.emitChange(); return; }
+    if (this.status === "connecting") return;
+    if (typeof navigator === "undefined" || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      this.status = "unsupported";
+      this.detail = "This browser will not share the microphone here. Try Chrome, or open the page over https.";
+      this.emitChange();
+      return;
+    }
+    this.status = "connecting";
+    this.emitChange();
+    try {
+      // Create the AudioContext inside the tap, before await, so iOS keeps it awake.
+      const ctx = Snd.init();
+      if (ctx && ctx.state === "suspended" && ctx.resume) { try { await ctx.resume(); } catch (e) {} }
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: false,   // these three would eat a piano tone
+          noiseSuppression: false,
+          autoGainControl: false,
+          channelCount: 1
+        },
+        video: false
+      });
+      if (this.mode !== "listen") {                       // user changed their mind
+        stream.getTracks().forEach(function (t) { t.stop(); });
+        return;
+      }
+      this.pitch = new PitchTracker(stream, {
+        sensitivity: this.sensitivity,
+        onNote: function (midi, cents, rms) { self.noteOn(midi, 0.85, "listen"); },
+        onFrame: function (info) { self.emitFrame(info); }
+      });
+      this.pitch.start();
+      this.status = "ok";
+      this.detail = "";
+      if (this.suppressOwnSound) Snd.setEnabled(false);
+    } catch (err) {
+      const name = err && err.name ? err.name : "";
+      if (name === "NotAllowedError" || name === "SecurityError") {
+        this.status = "denied";
+        this.detail = "Microphone permission was refused. Allow the mic for this page, or use a MIDI piano instead.";
+      } else if (name === "NotFoundError" || name === "DevicesNotFoundError" || name === "OverconstrainedError") {
+        this.status = "notfound";
+        this.detail = "No microphone found. Plug in a USB mic, or switch to a MIDI piano.";
+      } else {
+        this.status = "error";
+        this.detail = "Could not start listening (" + (err && err.message ? err.message : "unknown error") + ").";
+      }
+      this.pitch = null;
+      this.emitChange();
+    }
+  },
+
+  frameHandlers: [],
+  onFrame(fn) { if (typeof fn === "function") this.frameHandlers.push(fn); },
+  emitFrame(info) {
+    this.frameHandlers.forEach(function (f) { try { f(info); } catch (e) {} });
+  }
+};
+
+/* ------------------------------------------------------------ saved prefs */
+const INPUT_KEY = "pianoPals.input.v1";
+function loadInputPref() {
+  try { return JSON.parse(localStorage.getItem(INPUT_KEY) || "{}") || {}; } catch (e) { return {}; }
+}
+function saveInputPref(patch) {
+  try {
+    const cur = loadInputPref();
+    for (const k in patch) cur[k] = patch[k];
+    localStorage.setItem(INPUT_KEY, JSON.stringify(cur));
+  } catch (e) { /* private mode: the choice just won't stick */ }
+}
+
+/* ==========================================================================
+   PITCH TRACKER
+   Monophonic detector tuned for piano: autocorrelation over a 4096-sample
+   window, with an RMS noise gate, an octave-error guard, a stability hold and
+   a re-trigger lock so one struck note is one hit.
+   ========================================================================== */
+function PitchTracker(stream, opts) {
+  opts = opts || {};
+  this.stream = stream;
+  this.sensitivity = opts.sensitivity != null ? opts.sensitivity : 0.5;
+  this.onNote = opts.onNote || function () {};
+  this.onFrame = opts.onFrame || function () {};
+  this.ctx = null;
+  this.src = null;
+  this.node = null;
+  this.buf = null;
+  this.running = false;
+
+  // detection state
+  this.candidate = null;    // current stable pitch class
+  this.stableSince = 0;
+  this.lockedNote = null;   // note already reported; ignored until it decays
+  this.quietSince = 0;
+  this.cents = 0;
+  this.rms = 0;
+}
+
+PitchTracker.prototype.start = function () {
+  const c = Snd.init();
+  if (!c) return;
+  this.ctx = c;
+  this.src = c.createMediaStreamSource(this.stream);
+
+  // ScriptProcessor is deprecated but works everywhere including iOS Safari,
+  // and this is a small, offline app - no need for an AudioWorklet module.
+  const size = 4096;
+  const node = c.createScriptProcessor(2048, 1, 1);
+  node.onaudioprocess = (e) => {
+    if (!this.running) return;
+    const input = e.inputBuffer.getChannelData(0);
+    // keep the most recent 4096 samples in a ring-ish buffer
+    this._acc = this._acc || [];
+    for (let i = 0; i < input.length; i++) this._acc.push(input[i]);
+    const need = size;
+    if (this._acc.length > need * 2) this._acc = this._acc.slice(this._acc.length - need * 2);
+    if (this._acc.length < need) return;
+    const frame = this._acc.slice(this._acc.length - need);
+    this.analyse(frame, c.sampleRate);
+  };
+  this.src.connect(node);
+  // A ScriptProcessor needs a destination to be pulled; keep it silent.
+  const mute = c.createGain();
+  mute.gain.value = 0;
+  node.connect(mute);
+  mute.connect(c.destination);
+  this.node = node;
+  this.mute = mute;
+  this.running = true;
+};
+
+PitchTracker.prototype.stop = function () {
+  this.running = false;
+  try { if (this.src) this.src.disconnect(); } catch (e) {}
+  try { if (this.node) { this.node.onaudioprocess = null; this.node.disconnect(); } } catch (e) {}
+  try { if (this.mute) this.mute.disconnect(); } catch (e) {}
+  try { this.stream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {}
+  this.stream = null; this.src = null; this.node = null; this.mute = null;
+  this._acc = [];
+};
+
+/** Normalised autocorrelation, then parabolic interpolation for cents. */
+PitchTracker.prototype.detect = function (buf, rate) {
+  const n = buf.length;
+  // 1. noise gate - piano in a quiet room sits well above this
+  let sumSq = 0;
+  for (let i = 0; i < n; i++) sumSq += buf[i] * buf[i];
+  const rms = Math.sqrt(sumSq / n);
+  // 0.5 sensitivity -> ~0.006 gate; slider shifts it up/down
+  const gate = 0.0016 + (1 - this.sensitivity) * 0.02;
+  if (rms < gate) return null;
+
+  // 2. remove DC so the correlation isn't skewed
+  let mean = 0;
+  for (let i = 0; i < n; i++) mean += buf[i];
+  mean /= n;
+  for (let i = 0; i < n; i++) buf[i] -= mean;
+
+  const minF = 55, maxF = 2200;                 // A1 .. C#7 - covers a piano's useful range
+  const minLag = Math.floor(rate / maxF);
+  const maxLag = Math.floor(rate / minF);
+
+  // 3. normalised square difference (a cheap YIN cousin): smaller is better
+  const nsdf = new Float32Array(maxLag + 2);
+  for (let lag = minLag; lag <= maxLag; lag++) {
+    let acf = 0, energy = 0;
+    const limit = n - lag;
+    for (let i = 0; i < limit; i++) {
+      const a = buf[i], b = buf[i + lag];
+      acf += a * b;
+      energy += a * a + b * b;
+    }
+    nsdf[lag] = energy > 1e-9 ? (2 * acf) / energy : 0;
+  }
+
+  // 4. first strong peak above a threshold (avoids the octave-down trap)
+  let bestLag = -1, bestVal = 0;
+  const THRESH = 0.72;
+  for (let lag = minLag + 1; lag < maxLag; lag++) {
+    if (nsdf[lag] > nsdf[lag - 1] && nsdf[lag] >= nsdf[lag + 1] && nsdf[lag] > THRESH) {
+      // walk to the top of this peak, then take the tallest one
+      let l = lag;
+      while (l < maxLag && nsdf[l + 1] > nsdf[l]) l++;
+      if (nsdf[l] > bestVal) { bestVal = nsdf[l]; bestLag = l; }
+      if (bestVal > 0.93) break;                // clean enough, stop early
+    }
+  }
+  if (bestLag < 0) return null;
+
+  // 5. parabolic refinement for sub-sample accuracy
+  const y0 = nsdf[bestLag - 1], y1 = nsdf[bestLag], y2 = nsdf[bestLag + 1];
+  const denom = 2 * (2 * y1 - y0 - y2);
+  const shift = denom !== 0 ? (y2 - y0) / denom : 0;
+  const lagRefined = bestLag + clamp(shift, -0.5, 0.5);
+  const freq = rate / lagRefined;
+  if (!isFinite(freq) || freq < minF || freq > maxF) return null;
+
+  const midiFloat = 69 + 12 * Math.log2(freq / 440);
+  const midi = Math.round(midiFloat);
+  const cents = Math.round((midiFloat - midi) * 100);
+  if (Math.abs(cents) > 50) return null;        // not really a note
+  return { midi: midi, cents: cents, freq: freq, conf: bestVal, rms: rms };
+};
+
+PitchTracker.prototype.analyse = function (buf, rate) {
+  const now = performance.now();
+
+  // Measure the input level first, so the meter shows silence as silence.
+  let sumSq = 0;
+  for (let i = 0; i < buf.length; i++) sumSq += buf[i] * buf[i];
+  const liveRms = Math.sqrt(sumSq / buf.length);
+  this.rms = liveRms;
+
+  const hit = this.detect(buf, rate);
+
+  this.onFrame({
+    rms: liveRms,
+    midi: hit ? hit.midi : null,
+    cents: hit ? hit.cents : 0,
+    freq: hit ? hit.freq : 0,
+    gate: 0.0016 + (1 - this.sensitivity) * 0.02
+  });
+
+  if (!hit) {
+    // silence: after a short while allow the same note to fire again
+    if (!this.quietSince) this.quietSince = now;
+    if (now - this.quietSince > 140) {
+      this.lockedNote = null;
+      this.candidate = null;
+      this.stableSince = 0;
+    }
+    return;
+  }
+  this.quietSince = 0;
+
+  if (this.lockedNote === hit.midi) return;     // already reported; wait for it to decay
+
+  if (this.candidate !== hit.midi) {
+    this.candidate = hit.midi;
+    this.stableSince = now;
+    return;
+  }
+  // must hold steady for ~70 ms before we call it a note
+  if (now - this.stableSince >= 70) {
+    this.lockedNote = hit.midi;
+    this.candidate = hit.midi;
+    this.onNote(hit.midi, hit.cents, hit.rms);
+  }
+};
+
 /* ==========================================================================
    LESSONS
    Each lesson is a list of steps. Every step has something to tap.
@@ -2317,7 +2949,8 @@ function viewFree() {
        '<button class="iconbtn" data-back="1" aria-label="Back">‹</button>' +
        '<div class="ptitle"><b>🎹 Free Play</b><span>Tap any key</span></div>' +
        '<div class="chip gold">⭐ ' + totalStars(k) + '</div>' +
-       '</div>';
+       '</div>' + inputStrip() +
+       '';
   h += '<div class="bigdisplay" id="freedisplay">🎶</div>';
   h += '<div class="freebar">' +
        '<button class="btn sun" data-guess="1">🎧 Guess the note</button>' +
@@ -2335,18 +2968,44 @@ function viewFree() {
 function wireFree() {
   const wrap = $("#freewrap");
   if (!wrap) return;
-  const disp = $("#freedisplay");
   wireKeys(wrap, function (midi, el) {
     Snd.unlock();
     Snd.play(midi, { vol: 0.55, dur: 1.1 });
     flashKey(el);
-    if (disp) { disp.textContent = noteName(midi) + octaveOf(midi); disp.classList.remove("pop"); void disp.offsetWidth; disp.classList.add("pop"); }
-    if (FREE.recorder) {
-      FREE.recorder.push({ midi: midi, t: performance.now() - FREE.recStart });
-    }
-    if (FREE.guess && FREE.guess.open) guessTap(midi);
+    freeHit(midi);
   });
+  // ...and the same handler for a real piano, so both paths behave identically.
+  if (!FREE.hooked) {
+    FREE.hooked = true;
+    Inp.onNote(function (midi, vel, origin) {
+      if (S.screen !== "free") return;
+      if (origin === "touch") return;         // already handled above
+      // A real piano makes its own sound; only echo it back if the child is
+      // looking at a silent app and needs to hear the note.
+      if (origin === "midi") Snd.play(midi, { vol: 0.28, dur: 0.8 });
+      freeHit(midi);
+    });
+    Inp.onKeyUp(function (midi) {
+      const el = wrap.querySelector('[data-m="' + midi + '"]');
+      if (el) el.classList.remove("on");
+    });
+  }
+  wireFreeControls(wrap);
+  wrap.classList.toggle("secondary", Inp.mode !== "touch");
+}
 
+/** Everything that happens when a note is played in Free Play, whatever the source. */
+function freeHit(midi) {
+  const disp = $("#freedisplay");
+  if (disp) {
+    disp.textContent = noteName(midi) + octaveOf(midi);
+    disp.classList.remove("pop"); void disp.offsetWidth; disp.classList.add("pop");
+  }
+  if (FREE.recorder) FREE.recorder.push({ midi: midi, t: performance.now() - FREE.recStart });
+  if (FREE.guess && FREE.guess.open) guessTap(midi);
+}
+
+function wireFreeControls(wrap) {
   const rec = $("#recbtn");
   const playrec = $("#playrecbtn");
   if (rec) rec.addEventListener("click", function () {
@@ -2483,14 +3142,223 @@ function endGuess() {
 /* ==========================================================================
    GROWN-UP PANEL
    ========================================================================== */
+/* ==========================================================================
+   INPUT SETTINGS UI  (inside the grown-up panel)
+   ========================================================================== */
+
+/** The three-way source picker plus whatever the chosen source needs. */
+function inputPanelHTML() {
+  const mode = Inp.mode;
+  let h = '<div class="inputbar">' +
+    srcBtn("touch", "👆", "Touch screen", mode) +
+    srcBtn("midi", "🎹", "MIDI piano", mode) +
+    srcBtn("listen", "👂", "Listen to<br>my piano", mode) +
+    '</div>';
+
+  h += '<div class="pianostatus ' + statusClass() + '">' +
+       '<span class="ico">' + statusIcon() + '</span><span>' + statusText() + '</span></div>';
+
+  if (mode === "midi") {
+    if (Inp.status === "unsupported") {
+      // nothing else to offer - the explanation above is the whole story
+    } else if (Inp.midiInputs.length) {
+      h += '<select class="midisel" data-mididev="1" aria-label="MIDI device">' +
+        Inp.midiInputs.map(function (d) {
+          const sel = Inp.wantDevice === d.id ? " selected" : "";
+          return '<option value="' + esc(d.id) + '"' + sel + '>' + esc(d.name) +
+                 (d.manufacturer ? " · " + esc(d.manufacturer) : "") + '</option>';
+        }).join("") + '</select>';
+    }
+    h += '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">' +
+         '<button class="btn" data-midireconnect="1" style="flex:1;margin:0;font-size:14px;min-height:44px">🔄 Reconnect</button>' +
+         '</div>';
+  }
+
+  if (mode === "listen") {
+    const pct = Math.round(Inp.sensitivity * 100);
+    h += '<div class="sensrow"><label>Mic level</label>' +
+         '<input type="range" min="5" max="95" value="' + Math.round(Inp.sensitivity * 100) +
+         '" data-sens="1" aria-label="Microphone sensitivity">' +
+         '<span class="sensval" id="sensval">' + pct + '%</span></div>';
+    h += '<div class="meter" aria-hidden="true"><i id="levelbar" style="width:0%"></i></div>';
+    if (Inp.status === "idle") {
+      h += '<button class="btn primary" data-startlisten="1" style="margin-top:9px">' +
+           (Inp.mode === "listen" ? "🎤 Start listening" : "🎤 Start listening") + '</button>';
+    }
+    h += '<div class="mictip">🎧 Headphones, or turn the app sound off, so Piano Pals does not ' +
+         'hear itself. Best in a quiet room, one note at a time.</div>';
+  }
+
+  if (mode !== "touch") {
+    h += testPanelHTML();
+  }
+  return h;
+}
+
+function srcBtn(id, emoji, label, current) {
+  return '<button class="srcbtn' + (current === id ? " sel" : "") + '" data-src="' + id + '"' +
+    ' aria-pressed="' + (current === id) + '">' +
+    '<span class="em">' + emoji + '</span><span>' + label + '</span></button>';
+}
+
+function statusClass() {
+  if (Inp.mode === "touch") return "";
+  if (Inp.status === "ok") return "ok";
+  if (Inp.status === "connecting" || Inp.status === "idle") return "";
+  if (Inp.status === "notfound") return "warn";
+  return "bad";
+}
+
+function statusIcon() {
+  if (Inp.mode === "touch") return "👆";
+  if (Inp.status === "ok") return "✅";
+  if (Inp.status === "connecting") return "⏳";
+  if (Inp.status === "idle") return "🎤";
+  if (Inp.status === "notfound") return "🔌";
+  if (Inp.status === "denied") return "🚫";
+  return "⚠️";
+}
+
+/** Plain-language status, no jargon, always says what to do next. */
+function statusText() {
+  if (Inp.mode === "touch") return "Using the on-screen keyboard. Pick a real piano above if you have one.";
+  if (Inp.mode === "midi") {
+    if (Inp.status === "ok") return "Piano connected: <b>" + esc(Inp.deviceName || "MIDI piano") + "</b>. Play a note on the piano to test it.";
+    if (Inp.status === "connecting") return "Looking for a piano…";
+    if (Inp.status === "notfound") return "No piano found. Check the USB cable and that the piano is switched on, then press Reconnect.";
+    if (Inp.status === "unsupported") return "<b>This browser can't talk to MIDI pianos.</b> Safari and iPad have no Web MIDI — open Piano Pals in Chrome or Edge on a computer for the USB piano, or use <b>Listen to my piano</b> instead.";
+    if (Inp.status === "denied") return "MIDI access was blocked. Allow MIDI for this page in the browser's site settings, then reload.";
+    return "MIDI is not answering. Unplug and replug the piano, then press Reconnect.";
+  }
+  if (Inp.mode === "listen") {
+    if (Inp.status === "ok") return "Listening. Play one note at a time and watch it appear below.";
+    if (Inp.status === "connecting") return "Waiting for microphone permission…";
+    if (Inp.status === "idle") return "Tap <b>Start listening</b>, then let the browser use the microphone.";
+    if (Inp.status === "denied") return "Microphone permission was refused. Allow the mic for this page in the browser settings, then press Start listening again.";
+    if (Inp.status === "notfound") return "No microphone found. Plug one in, or use the on-screen keyboard.";
+    if (Inp.status === "unsupported") return "This browser won't give the page a microphone here. Try Chrome, or open the page over https.";
+    return "Could not start listening. Try again, or use the on-screen keyboard.";
+  }
+  return "";
+}
+
+/** "Test my piano": a live readout so a parent can check it works. */
+function testPanelHTML() {
+  const names = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+  let strip = "";
+  for (let i = 0; i < 12; i++) {
+    strip += '<i data-pc="' + i + '" class="' + (names[i].indexOf("#") > -1 ? "bk" : "") + '">' + names[i] + '</i>';
+  }
+  return '<div class="testbox" id="testbox">' +
+    '<div style="font-size:11px;font-weight:900;letter-spacing:.9px;text-transform:uppercase;color:var(--ink-soft);text-align:center">Test my piano</div>' +
+    '<div class="testnote"><b id="testnote">–</b><span id="testcents">waiting…</span></div>' +
+    '<div class="tstrip" id="tstrip">' + strip + '</div>' +
+    '</div>';
+}
+
+/** Called after every input state change / detected note. */
+function refreshInputPanel() {
+  const host = $("#inputpanel");
+  if (!host) return;
+  host.innerHTML = inputPanelHTML();
+  paintTestNote();
+}
+
+let testPulse = null;
+let waitingTimer = null;
+function scheduleWaiting() {
+  clearTimeout(waitingTimer);
+  waitingTimer = setTimeout(function () {
+    const box = $("#testbox");
+    const centsEl = $("#testcents");
+    if (!box) return;
+    box.classList.remove("live");
+    if (centsEl) centsEl.textContent = "waiting…";
+    const strip = $("#tstrip");
+    if (strip) Array.prototype.slice.call(strip.children).forEach(function (el) { el.classList.remove("on"); });
+    const big = $("#testnote");
+    if (big) big.textContent = "–";
+  }, 2500);
+}
+
+function paintTestNote() {
+  const midi = Inp.lastNote;
+  const big = $("#testnote");
+  const centsEl = $("#testcents");
+  const box = $("#testbox");
+  const strip = $("#tstrip");
+  if (!big) return;
+  const recent = Inp.lastNoteAt && (performance.now() - Inp.lastNoteAt) < 4000;
+  if (midi != null && recent) {
+    big.textContent = noteName(midi) + octaveOf(midi);
+    if (centsEl) centsEl.textContent = "MIDI " + midi;
+    if (box) box.classList.add("live");
+    if (strip) {
+      Array.prototype.slice.call(strip.children).forEach(function (el, i) {
+        el.classList.toggle("on", i === ((midi % 12) + 12) % 12);
+      });
+    }
+    clearTimeout(testPulse);
+    testPulse = setTimeout(function () {
+      if (box) box.classList.remove("live");
+    }, 1200);
+    scheduleWaiting();
+  } else {
+    big.textContent = "–";
+    if (centsEl) centsEl.textContent = "waiting…";
+    if (strip) Array.prototype.slice.call(strip.children).forEach(function (el) { el.classList.remove("on"); });
+    if (box) box.classList.remove("live");
+  }
+}
+
+/** Live mic readout: level bar + the note with a cents needle. */
+function paintMicFrame(f) {
+  const bar = $("#levelbar");
+  if (bar) {
+    // dBFS mapped from -60 dB (empty) to -18 dB (full), so quiet playing still
+    // shows movement and a loud chord doesn't just pin the bar at 100%.
+    const db = 20 * Math.log10(Math.max(f.rms, 1e-6));
+    const pct = clamp(Math.round(((db + 62) / 50) * 100), 0, 100);
+    bar.style.width = pct + "%";
+  }
+  const big = $("#testnote");
+  const centsEl = $("#testcents");
+  const box = $("#testbox");
+  if (!big) return;
+  if (f.midi != null) {
+    big.textContent = noteName(f.midi) + octaveOf(f.midi);
+    if (centsEl) {
+      const c = f.cents;
+      centsEl.textContent = (c === 0 ? "in tune" : (c > 0 ? "+" + c + "¢" : c + "¢")) +
+        (f.freq ? "  ·  " + f.freq.toFixed(1) + " Hz" : "");
+    }
+    if (box) box.classList.add("live");
+    scheduleWaiting();
+  } else if (!Inp.lastNoteAt || performance.now() - Inp.lastNoteAt > 900) {
+    if (centsEl) centsEl.textContent = "waiting…";
+    if (box) box.classList.remove("live");
+  }
+  const strip = $("#tstrip");
+  if (strip && f.midi != null) {
+    Array.prototype.slice.call(strip.children).forEach(function (el, i) {
+      el.classList.toggle("on", i === ((f.midi % 12) + 12) % 12);
+    });
+  }
+}
+
 function openGrown() {
   const k = curKid();
+  if (Inp.mode === "listen" && Inp.pitch == null) Inp.status = "idle";
   const soundOn = Snd.enabled;
   modalEl.hidden = false;
   modalEl.innerHTML = '<div class="sheet">' +
     '<h2>⚙️ Grown-up corner</h2>' +
     '<div class="row"><div class="txt"><b>Sound</b><span>Mute all sounds</span></div>' +
       '<button class="switch' + (soundOn ? " on" : "") + '" data-toggle-sound="1" aria-label="Sound"></button></div>' +
+    '<div class="row"><div class="txt"><b>Hear the app play</b><span>Leave on for on-screen taps. Turn off when the real piano is the instrument.</span></div>' +
+      '<button class="switch' + (Inp.suppressOwnSound ? " on" : "") + '" data-toggle-ownsound="1" aria-label="App sound"></button></div>' +
+    '<div class="sec2">🎹 My piano</div>' +
+    '<div id="inputpanel">' + inputPanelHTML() + '</div>' +
     '<div class="row"><div class="txt"><b>Unlock all songs</b><span>Skip the song-by-song unlocking</span></div>' +
       '<button class="switch' + (DB.grown.unlockAll ? " on" : "") + '" data-toggle-unlock="1" aria-label="Unlock all"></button></div>' +
     '<div class="row"><div class="txt"><b>Reset ' + (k ? esc(k.name) : "this kid") + '\'s progress</b><span>Clears stars and lessons for this player only</span></div>' +
@@ -2578,9 +3446,63 @@ function openKidEditor(kid) {
   setTimeout(function () { const i = $("#kname"); if (i && !isNew) { i.focus(); i.select(); } }, 120);
 }
 
-function closeModal() { modalEl.hidden = true; modalEl.innerHTML = ""; }
+/* The mic should be live on Free Play / Songs / Lessons while listening mode is
+   on, and while the grown-up panel is open. Nowhere else. */
+function screenWantsMic() {
+  if (Inp.mode !== "listen") return false;
+  if (!modalEl.hidden) return true;                     // settings open to test
+  return S.screen === "play" || S.screen === "free" || S.screen === "lesson";
+}
+
+function syncMicLifecycle() {
+  if (Inp.mode !== "listen") return;
+  const want = screenWantsMic();
+  if (want && !Inp.pitch && Inp.status !== "denied" && Inp.status !== "connecting") {
+    // status is "idle" after a release, so don't gate on "ok" here
+    Inp.startListeningMode().then(function () {
+      if ($("#inputpanel")) refreshInputPanel();
+    });
+  } else if (!want && Inp.pitch) {
+    Inp.stopListeningMode();
+    Inp.status = "idle";
+    Inp.emitChange();
+  }
+}
+
+function closeModal() {
+  modalEl.hidden = true;
+  modalEl.innerHTML = "";
+  clearTimeout(testPulse);
+  clearTimeout(waitingTimer);
+  syncMicLifecycle();          // let go of the microphone if we're back on a text screen
+}
 modalEl.addEventListener("click", function (e) {
   if (e.target === modalEl) closeModal();   // tap outside the sheet
+});
+
+/* the sensitivity slider and device list need live events, so they get their
+   own listeners bound to the panel (delegated, because the panel re-renders) */
+modalEl.addEventListener("input", function (e) {
+  const t = e.target;
+  if (t && t.matches("[data-sens]")) {
+    const v = Number(t.value) / 100;
+    Inp.setSensitivity(v);
+    const out = $("#sensval");
+    if (out) out.textContent = Math.round(v * 100) + "%";
+  }
+});
+modalEl.addEventListener("change", function (e) {
+  const t = e.target;
+  if (t && t.matches("[data-mididev]")) {
+    Inp.wantDevice = t.value;
+    saveInputPref({ device: Inp.wantDevice });
+    Inp.hookMidiInputs(Inp.wantDevice);
+    const chosen = Inp.midiInputs.filter(function (d) { return d.id === Inp.wantDevice; })[0];
+    if (chosen) Inp.deviceName = chosen.name;
+    Inp.status = "ok";
+    Inp.emitChange();
+    refreshInputPanel();
+  }
 });
 
 /* ==========================================================================
@@ -2606,6 +3528,11 @@ function render() {
   Game.destroy();
   if (S.screen !== "play") keepAwake(false);
   if (S.screen !== "free") { FREE.guess = null; FREE.playing = false; }
+  // The microphone is only ever held while the child is actually playing (or
+  // while a grown-up has the settings panel open to test it). Closing the app
+  // or leaving the screen releases it, so the browser's "recording" light
+  // goes out instead of quietly staying on all afternoon.
+  syncMicLifecycle();
   const k = curKid();
   const col = k ? k.color : "#F25CA8";
   document.documentElement.style.setProperty("--kid", col);
@@ -2673,6 +3600,37 @@ document.addEventListener("click", function (e) {
     return;
   }
 
+  // ---- piano input controls (inside the grown-up panel) ----
+  if ((el = hit("[data-src]"))) {
+    const m = el.getAttribute("data-src");
+    Inp.setMode(m);
+    const k = curKid();
+    if (k) { k.settings = k.settings || {}; k.settings.input = m; saveDB(); }
+    refreshInputPanel();
+    if (m === "listen" && Inp.status === "idle") { /* wait for the explicit Start tap */ }
+    return;
+  }
+  if ((el = hit("[data-startlisten]"))) {
+    Inp.startListeningMode().then(function () {
+      refreshInputPanel();
+      if (S.screen !== "lesson" && !$("#inputchip")) render();
+    });
+    return;
+  }
+  if ((el = hit("[data-midireconnect]"))) {
+    Inp.disconnectMidi();
+    Inp.connectMidi(false);
+    refreshInputPanel();
+    return;
+  }
+  if ((el = hit("[data-toggle-ownsound]"))) {
+    Inp.setMuteOwn(!Inp.suppressOwnSound);
+    el.classList.toggle("on", Inp.suppressOwnSound);
+    if (Inp.suppressOwnSound) toast("App sound off — your piano is the instrument");
+    else toast("App sound on");
+    return;
+  }
+  if ((el = hit("[data-open-input]"))) { openGrown(); return; }
   if ((el = hit("[data-grown]"))) { openGrown(); return; }
   if ((el = hit("[data-close-modal]"))) { closeModal(); return; }
   if ((el = hit("[data-toggle-sound]"))) {
@@ -2832,16 +3790,66 @@ document.addEventListener("keydown", function (e) {
 
 /* pause the scrolling game when the tab is hidden */
 document.addEventListener("visibilitychange", function () {
-  if (document.hidden) Game.pause();
-  else Game.resume();
+  if (document.hidden) {
+    Game.pause();
+    if (Inp.mode === "listen" && Inp.pitch) {
+      Inp.stopListeningMode();
+      Inp.status = "idle";
+      Inp.emitChange();
+    }
+  } else {
+    Game.resume();
+    syncMicLifecycle();
+  }
 });
 
 /* ---------------------------------------------------------------- boot */
 function boot() {
+  // The input layer reads its saved choice and only opens hardware if the
+  // parent already asked for it last time.
+  Inp.onFrame(paintMicFrame);
+  Inp.onChange(function () {
+    // 1. Chips live outside the settings panel, so they always follow state,
+    //    panel open or not.
+    const c = inputChipInfo();
+    const pick = $("[data-open-input]");
+    if (pick) {
+      pick.className = "chip inputchip " + c.cls;
+      pick.innerHTML = c.label + ' · change';
+    }
+    const chip = $("#inputchip");
+    if (chip) {
+      chip.className = "chip inputchip " + c.cls;
+      chip.innerHTML = c.label;
+      if (c.canStart) chip.setAttribute("data-startlisten", "1");
+      else chip.removeAttribute("data-startlisten");
+    }
+
+    // 2. Panel-only bits. Only swap the status line + test panel, so a dragged
+    //    slider is not yanked out from under the parent's thumb mid-gesture.
+    if (!$("#inputpanel")) return;
+    const st = modalEl.querySelector(".pianostatus");
+    if (st) {
+      st.className = "pianostatus " + statusClass();
+      st.innerHTML = '<span class="ico">' + statusIcon() + '</span><span>' + statusText() + '</span>';
+    }
+    const sel = modalEl.querySelector("[data-mididev]");
+    const needsList = Inp.mode === "midi" && Inp.midiInputs.length &&
+                      (!sel || sel.options.length !== Inp.midiInputs.length);
+    const needsNoList = Inp.mode === "midi" && !Inp.midiInputs.length && !!sel;
+    if (needsList || needsNoList) refreshInputPanel();
+    paintTestNote();
+  });
+  Inp.init();
   const k = curKid();
   if (k) {
     document.documentElement.style.setProperty("--kid", k.color);
     Snd.setEnabled(!(k.settings && k.settings.sound === false));
+    // A per-kid input choice wins over the device default, so Maya can be on
+    // the MIDI piano and Kai on the screen without fighting each other.
+    if (k.settings && k.settings.input && INPUT_MODES.includes(k.settings.input) && k.settings.input !== Inp.mode) {
+      Inp.setMode(k.settings.input);
+    }
   }
   render();
 }
@@ -2857,10 +3865,35 @@ window.PianoPals = {
       screen: S.screen, songId: S.songId, ver: S.ver, mode: S.mode,
       lesson: L.lesson ? L.lesson.id : null, step: L.step, prog: L.prog,
       stepType: L.lesson && L.lesson.steps[L.step] ? L.lesson.steps[L.step].type : null,
-      gameHits: Game.hits, gameTotal: Game.total, gameRunning: Game.running
+      gameHits: Game.hits, gameTotal: Game.total, gameRunning: Game.running,
+      input: { mode: Inp.mode, status: Inp.status, device: Inp.deviceName,
+               inputs: Inp.midiInputs.map(function (d) { return d.name; }),
+               lastNote: Inp.lastNote, sens: Inp.sensitivity,
+               muted: !Snd.enabled, ownSound: Inp.suppressOwnSound }
     };
   },
-  db: function () { return JSON.parse(JSON.stringify(DB)); }
+  db: function () { return JSON.parse(JSON.stringify(DB)); },
+  /* Lets the smoke tests exercise the pitch maths on synthetic buffers
+     without a microphone. Read-only: it only calls the detector. */
+  testPitch: function (buf, rate, sens) {
+    const tr = Object.create(PitchTracker.prototype);
+    tr.sensitivity = sens == null ? 0.5 : sens;
+    return tr.detect(buf, rate || 48000);
+  },
+  /* A bare tracker with no microphone attached, for testing the gate and the
+     repeat-lock without any audio hardware. */
+  testTracker: function (sens, onNote) {
+    const tr = Object.create(PitchTracker.prototype);
+    tr.sensitivity = sens == null ? 0.5 : sens;
+    tr.candidate = null; tr.stableSince = 0; tr.lockedNote = null;
+    tr.quietSince = 0; tr.cents = 0; tr.rms = 0;
+    tr.onNote = onNote || function () {};
+    tr.onFrame = function () {};
+    return {
+      feed: function (buf, rate) { tr.analyse(buf, rate || 48000); },
+      state: function () { return { locked: tr.lockedNote, candidate: tr.candidate }; }
+    };
+  }
 };
 })();
 </script>
