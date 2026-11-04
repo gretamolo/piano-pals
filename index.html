@@ -296,6 +296,7 @@ body::before{
 .note .nn{font-size:clamp(12px,2.2vh,21px);font-weight:900;color:#fff;text-shadow:0 2px 0 #0004;
   padding-left:6px;letter-spacing:.5px}
 .note .fn{font-size:11px;width:20px;height:20px;top:2px;left:2px}
+.note .fn.ear{font-size:11px;background:#EAF6FF;border-width:2px}
 .note.wobble .ninner{animation:wob .4s ease}
 @keyframes wob{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px) rotate(-3deg)}
   50%{transform:translateX(7px) rotate(3deg)}75%{transform:translateX(-4px)}}
@@ -371,9 +372,11 @@ body::before{
 .cel-card h2{font-size:clamp(26px,5vh,36px);font-weight:900;line-height:1.05}
 .cel-card .sub{color:var(--ink-soft);font-size:15px;margin-top:4px}
 .cel-stars{display:flex;justify-content:center;gap:4px;margin:14px 0 6px;font-size:clamp(34px,7vh,52px);line-height:1}
-.cel-stars i{font-style:normal;color:#DDE1EE;display:inline-block;transform:scale(.8);opacity:.5}
-.cel-stars i.on{color:#FFB300;text-shadow:0 4px 0 #0001;animation:starPop .45s cubic-bezier(.2,1.6,.5,1) both}
-@keyframes starPop{0%{transform:scale(0) rotate(-30deg)}70%{transform:scale(1.25) rotate(6deg)}100%{transform:scale(1)}}
+.cel-stars i{font-style:normal;color:#DDE1EE;display:inline-block;transform:scale(.8);opacity:.45}
+.cel-stars i.on{color:#FFB300;opacity:1;transform:scale(1);text-shadow:0 4px 0 #0002;
+  animation:starPop .45s cubic-bezier(.2,1.6,.5,1) both}
+@keyframes starPop{0%{transform:scale(0) rotate(-30deg);opacity:0}
+  70%{transform:scale(1.25) rotate(6deg);opacity:1}100%{transform:scale(1);opacity:1}}
 .cel-card .btn{width:100%;margin-top:10px}
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:41;overflow:hidden}
 .confetti i{position:absolute;top:-24px;width:11px;height:16px;border-radius:3px;animation:fall linear forwards}
@@ -1358,15 +1361,15 @@ const Game = {
     // ---- build one element per step, plus cool-blue bass blocks ----
     const self = this;
     this.els = [];
-    const mk = function (midi, hand, finger) {
+    const mk = function (midi, hand, finger, listening) {
       const el = document.createElement("div");
-      el.className = "note " + (hand === "l" ? "lh" : "rh");
+      el.className = "note " + (hand === "l" ? "lh" : "rh") + (listening ? " listen" : "");
       el.style.width = (self.keyW * 0.86) + "px";
       el.style.height = (self.noteH * (hand === "l" ? 0.72 : 1)) + "px";
       el.style.left = (self.xOf(midi) - self.keyW * 0.43) + "px";
       el.style.top = "0px";
       el.innerHTML = '<span class="ninner">' +
-        (finger ? '<span class="fn">' + finger + '</span>' : "") +
+        (finger ? '<span class="fn">' + finger + '</span>' : '<span class="fn ear">👂</span>') +
         '<span class="nn">' + noteName(midi) + '</span></span>';
       el.dataset.m = midi;
       self.roll.appendChild(el);
@@ -1379,7 +1382,7 @@ const Game = {
       self.els.push(st.el);
       st.autos.forEach(function (a) {
         if (!a.show) return;
-        a.el = mk(a.midi, "l", null);
+        a.el = mk(a.midi, "l", null, true);
         a.el.dataset.autoEl = "1";
         a.el.dataset.i = i;
         a.el.style.opacity = "0";
@@ -1388,6 +1391,7 @@ const Game = {
 
     if (mode === "wait") {
       this.gap = clamp((H - this.noteH - 26) / 4.6, this.noteH + 8, 130);
+      this.visible = clamp(Math.floor((H - this.noteH - 8) / this.gap), 2, 7);
       this.els.forEach(function (el, i) {
         el.style.transition = "transform .2s ease-out";
         el.style.transform = "translate3d(0," + (-self.noteH - 40 - i * self.gap) + "px,0)";
@@ -1454,7 +1458,7 @@ const Game = {
 
   placeWait() {
     const self = this;
-    const VISIBLE = 6;
+    const VISIBLE = this.visible || 5;
     this.steps.forEach(function (st, i) {
       const slot = i - self.idx;
       const hidden = slot < -1 || slot > VISIBLE;
@@ -1752,8 +1756,12 @@ function buildKeyboard() {
   if (!wrap) return;
   const model = Game.model || kbModel(48, 72);
   const hot = new Set();
-  (Game.notes || []).forEach(function (n) { hot.add(n.midi); });
-  wrap.innerHTML = kbHTML(model, { hot: hot });
+  const cool = new Set();
+  (Game.steps || []).forEach(function (st) {
+    hot.add(st.midi);
+    st.autos.forEach(function (a) { if (a.show) cool.add(a.midi); });
+  });
+  wrap.innerHTML = kbHTML(model, { hot: hot, cool: cool });
   wireKeys(wrap, function (midi, el) {
     Snd.unlock();
     Snd.play(midi, { vol: 0.5, dur: 0.9 });
